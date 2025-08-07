@@ -28,20 +28,6 @@ public class GameManager : MonoBehaviour
         occupied = new bool[width, height];
     }
 
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
-
     public bool IsAreaFree(Vector2Int start, Vector2Int size)
     {
         for(int x = 0; x < size.x; x++)
