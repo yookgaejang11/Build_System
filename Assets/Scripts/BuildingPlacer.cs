@@ -79,11 +79,7 @@ public class BuildingPlacer : MonoBehaviour
             }
         }
 
-        if (Input.GetMouseButton(1))
-        {
-            DestroyObj();
-        }
-
+        
 
         if (GameManager.Instance.isBuilding)
         {
@@ -107,23 +103,23 @@ public class BuildingPlacer : MonoBehaviour
             }
 
 
-            
+            if (Physics.Raycast(ray, out hit, 100f, LayerMask.GetMask("Obj")))
+            {
+                Vector3 hitPoint = hit.point;
+                Vector2Int gridPos = new Vector2Int(Mathf.FloorToInt(hitPoint.x), Mathf.FloorToInt(hitPoint.z));
+                if (Input.GetMouseButton(1))
+                {
+                    GameManager.Instance.DisableArea(gridPos,hit.collider.GetComponent<Building>().size);
+                    Destroy(hit.collider.gameObject);
+                }
+
+            }
 
         }
         
 
     }
 
-    void DestroyObj()
-    {
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        if (Physics.Raycast(ray, out RaycastHit hitObj, 100f, LayerMask.GetMask("Obj")))
-        {
-            Destroy(hitObj.transform.gameObject);
-
-        }
-
-    }
 
     public void StartBuilding(int buildingSize)
     {
@@ -139,6 +135,7 @@ public class BuildingPlacer : MonoBehaviour
         Vector3 spawnPos = new Vector3(gridPos.x + buildingData.size.x/2f, 1, gridPos.y + buildingData.size.y/2f);
         GameObject createBuilding = Instantiate(buildingPrefab, spawnPos, Quaternion.identity);
         createBuilding.transform.name = "CreateBuilding";
+        createBuilding.layer = 8;
         createBuilding.GetComponent<Building>().SetBuildingSize(buildingData.size.x);
         GameManager.Instance.OccupyArea(gridPos, buildingData.size);//오브젝트가 지어짐에 따라 맵의 데이터 변경
     }

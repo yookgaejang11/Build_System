@@ -5,27 +5,41 @@ using UnityEngine;
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
-
+    public Maze maze;
     public int width = 10;
     public int height = 10;
     public bool[,] occupied;    //true = 타일에 건물 있음
     public bool isBuilding = false; //건물을 지을 수 있는 상태
-
-    public int[,] map = new int[,]
-    {
-        { 0, 0, 0, 0, 0 },
-        { 0, 0, 0, 0, 0 },
-        { 0, 0, 0, 0, 0 },
-        { 0, 0, 0, 0, 0 },
-        { 0, 0, 0, 0, 0 },
-    };
+    public int[,] map;
 
     private void Awake()
     {
         Instance = this;
-        width = map.GetLength(0);
-        height = map.GetLength(1);
-        occupied = new bool[width, height];
+        /* map = new int[width, height];
+
+         for (int z = 0; z < height; z++)
+         {
+             for (int x = 0; x < width; x++)
+             {
+                 map[x, z] = 0;
+             }
+         }*/
+    }
+
+    public void CreateMaze(int[,] mapData)
+    {
+        map = mapData;
+        occupied = new bool[map.GetLength(0), map.GetLength(1)];
+        for (int z = 0; z < map.GetLength(0); z++)
+        {
+            for (int x = 0; x < map.GetLength(1); x++)
+            {
+                if (map[x,z] == 1)
+                {
+                    occupied[x,z] = true;
+                }
+            }
+        }
     }
 
     public bool IsAreaFree(Vector2Int start, Vector2Int size)
@@ -57,6 +71,17 @@ public class GameManager : MonoBehaviour
             for (int y = 0; y < size.y; y++)
             {
                 occupied[start.x + x, start.y + y] = true;
+            }
+        }
+    }
+
+    public void DisableArea(Vector2Int start, Vector2Int size)
+    {
+        for (int x = 0; x < size.x; x++)
+        {
+            for (int y = 0; y < size.y; y++)
+            {
+                occupied[start.x + x, start.y + y] = false;
             }
         }
     }
